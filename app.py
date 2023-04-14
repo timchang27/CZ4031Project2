@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template
-#from preprocessing import get_plans
+from preprocessing import get_plans
+import logging
 
 app = Flask(__name__)
 
@@ -20,6 +21,29 @@ def index():
         "plan_data": None,
         "summary_data": None,
     }
+
+    # handle POST request
+    if request.method == "POST":
+        logging.info("POST request")
+        # get query from the POST request
+        query = request.form["query"]
+
+        if query:
+            context["query"] = query
+
+            # get query result
+            has_error, result = get_plans(query)
+
+            # add results to context
+            if has_error:
+                context["errors"].append(result["msg"])
+            else:
+                context["summary_data"] = result["summary_data"]
+                context["plan_data"] = result["plan_data"]
+                context["natural_explain"] = result["natural_explain"]
+        else:
+            context["errors"].append("No query provided!")
+            logging.info("No query provided!")
 
     return render_template("index.html", **context)
 
