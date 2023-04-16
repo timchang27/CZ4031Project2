@@ -7,8 +7,8 @@ import logging
 class interface(object):
     def __init__(self, con, query1, query2):
         self.con = con
-        self.query1 = query1
-        self.query2 = query2
+        self.query1 = f"EXPLAIN (ANALYZE false, SETTINGS true, FORMAT JSON) {query1};"
+        self.query2 = f"EXPLAIN (ANALYZE false, SETTINGS true, FORMAT JSON) {query2};"
     
     def getComparison(self):
         cursurobject = self.con.cursor()
