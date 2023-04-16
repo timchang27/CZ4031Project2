@@ -96,7 +96,6 @@ def query_compare(query1, query2):
     changes_list = []
 
     for key in ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT']:
-           
         # Case 1: key exists in both queries
         if key in query_1_dict and key in query_2_dict:
             # Case 1.1: value in key is unchanged
