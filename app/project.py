@@ -38,45 +38,37 @@ def index():
         query = json.loads(query_string)
         query1 = query["query1"]
         query2 = query["query2"]
+        con = preprocessing.DatabaseConnection.get_conn()
         
-        if query1:
+        if con is not None and query1 and query2:
+            intf = interface.interface(con, query1, query2)
+            comparisonResult, jsonResult1, jsonResult2 = intf.getComparison()
+            context["explanation"] = comparisonResult
+            #app.logger.info(comparisonResult)
             context["query1"] = query1
-
-            # get query result
+            context["query2"] = query2
+            #context["json1"] = jsonResult1
+            #context["json2"] = jsonResult2
             has_error1, result1 = get_plans(query1)
-
-            # add results to context
             if has_error1:
                 context["errors1"].append(result1["msg"])
             else:
                 context["summary_data1"] = result1["summary_data"]
                 context["plan_data1"] = result1["plan_data"]
                 context["natural_explain1"] = result1["natural_explain"]
-        else:
-            context["errors1"].append("No query provided!")
 
-        if query2:
-            context["query2"] = query2
-
-            # get query result
             has_error2, result2 = get_plans(query2)
-
-            # add results to context
             if has_error2:
                 context["errors2"].append(result2["msg"])
             else:
                 context["summary_data2"] = result2["summary_data"]
                 context["plan_data2"] = result2["plan_data"]
                 context["natural_explain2"] = result2["natural_explain"]
-        else:
-            context["errors2"].append("No query provided!")   
-        context["explanation"] = "This is a sample message"    
-        con = preprocessing.DatabaseConnection.get_conn()
-        intf = interface.interface(con, query1, query2)
-        comparisonResult, jsonResult1, jsonResult2 = intf.getComparison()
-        context["comparison_result"] = comparisonResult
-        context["json1"] = jsonResult1
-        context["json2"] = jsonResult2
+        elif query1 is None:
+            context["errors1"].append("No query provided!")
+        elif query2 is None:
+            context["errors2"].append("No query provided!")
+  
     return render_template("index.html", **context)
 
 
