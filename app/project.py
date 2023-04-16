@@ -70,17 +70,20 @@ def index():
                 context["natural_explain2"] = result2["natural_explain"]
         else:
             context["errors2"].append("No query provided!")   
-        context["explanation"] = "This is a sample message"     
-
+        context["explanation"] = "This is a sample message"    
+        con = preprocessing.DatabaseConnection.get_conn()
+        intf = interface.interface(con, query1, query2)
+        comparisonResult = intf.getComparison()
+        context["comparison_result"] = comparisonResult
     return render_template("index.html", **context)
 
 
-@app.route("/getComparison", methods = ["POST"])
-def getComparison():
-    global query1, query2
-    con = preprocessing.DatabaseConnection.get_conn()
-    intf = interface.interface(con, query1, query2)
-    intf.getComparison()
+# @app.route("/getComparison", methods = ["POST"])
+# def getComparison():
+#     global query1, query2
+#     con = preprocessing.DatabaseConnection.get_conn()
+#     intf = interface.interface(con, query1, query2)
+#     intf.getComparison()
     
     
 
