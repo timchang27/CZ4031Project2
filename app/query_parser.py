@@ -96,9 +96,7 @@ def query_compare(query1, query2):
     changes_list = []
 
     for key in ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT']:
-        if key not in query_1_dict and key not in query_2_dict:
-            changes_list.append(f"This clause was not used in both queries")
-            
+           
         # Case 1: key exists in both queries
         if key in query_1_dict and key in query_2_dict:
             # Case 1.1: value in key is unchanged

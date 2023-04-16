@@ -4,6 +4,7 @@ import logging
 import json
 import preprocessing
 import interface
+from query_parser import query_compare
 
 app = Flask(__name__)
 
@@ -28,7 +29,8 @@ def index():
         "plan_data2": None,
         "summary_data1": None,
         "summary_data2": None,
-        "explanation": None,
+        "query_difference": None,
+        "qep_difference": None,
     }
 
     # handle POST request
@@ -38,13 +40,15 @@ def index():
         query = json.loads(query_string)
         query1 = query["query1"]
         query2 = query["query2"]
+
+        sql_comparison = query_compare(query1,query2)
+        context["query_difference"] = sql_comparison
         con = preprocessing.DatabaseConnection.get_conn()
         
         if con is not None and query1 and query2:
             intf = interface.interface(con, query1, query2)
             comparisonResult = intf.getComparison()
-            context["explanation"] = comparisonResult
-            #app.logger.info(comparisonResult)
+            context["qep_difference"] = comparisonResult
             context["query1"] = query1
             context["query2"] = query2
             has_error1, result1 = get_plans(query1)
