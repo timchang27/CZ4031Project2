@@ -15,7 +15,7 @@ This project aims to design and implement a user-friendly GUI application that c
     cd database
     ```
 
-3. Download the `database-dump.sql` and `CSV` files from my onedrive, save it in the database folder in Step 2. 
+3. Download the `database-dump.sql`, `CSV` and `Dockerfile` files from my onedrive, save it in the database folder in Step 2. 
     ```
     https://entuedu-my.sharepoint.com/:f:/g/personal/myeow003_e_ntu_edu_sg/Eqyar15zBddEqB89XAwbRC8BkB-GxYekhazyMuMURrF96A?e=918vcy
     ```
