@@ -73,10 +73,6 @@ class comparisonGeneartor(object):
             if cond is not None:
                 eachCond = [s.strip().replace("AND", "") for s in cond.split("AND")]
                 for item in eachCond:
-                    # if item[0] == item[1] == '(':
-                    #     item = item[1:]
-                    # elif item[-1] == item[-2] == ')':
-                    #     item = item[:-1]
                     regex = r"(\w+)\.(\w+)\s*=\s*(\w+)\.(\w+)"
                     matches = re.findall(regex, str(item))
                     r1, c1, r2, c2 = matches[0]
@@ -209,28 +205,7 @@ class comparisonGeneartor(object):
             finalComparisonString = "The following differences that occurred are the result of a join on two relations occuring in Query 2 but not in Query 1:"
             difference.append(finalComparisonString)
             difference.extend(inInt2)
-        return difference
-        
-        
-    # def _getPair(self, QEPTree, intermediateAccumulative):
-    #     def __checkWhetherRawRelations(relationList):
-    #         if relationList[0].startswith('_') or relationList[1].startswith('_'):
-    #             return False
-    #         return True
-        
-    #     pairDictionary = {}
-    #     relationsInvolved = QEPTree.leaf_plans.keys()
-    #     relationPairs = itertools.combinations(relationsInvolved, 2)        
-    #     for pair in relationPairs:
-    #         sorted_pair = ' + '.join(sorted(pair))
-    #         if sorted_pair not in pairDictionary:
-    #             pairDictionary[sorted_pair] = None
-    #     intermediates = QEPTree.intermediates
-    #     for key, value in intermediates.items():
-    #         if len(value['formedbyRelations']) == 2:
-    #             if not __
-            
-            
+        return difference  
    
     def _parseIntermediates(self, QEPTree):
         def __checkWhetherRawRelations(relationList):
@@ -270,9 +245,6 @@ class comparisonGeneartor(object):
                         intermediateAccumulative[key] += [relation]
                         added.append([relation])
                 
-                # print("added list:")
-                # print(added)
-                # print('---------------------')
                 for outerRelation in added[0]:
                     for innerRelation in added[1]:
                         if outerRelation != innerRelation:
@@ -284,41 +256,10 @@ class comparisonGeneartor(object):
                     intermediateAccumulative[key] += intermediateAccumulative[value['formedbyRelations'][0]]
                 else:
                     intermediateAccumulative[key] += [value['formedbyRelations'][0]]
-            
-
-            # {
-            #     "relation1 + relation2": {
-            #         "join": -
-            #         "joing_type": 
-            #         "hash_cond":
-            #         group_key:
-            #         sort_key: 
-            #     }
-            # }
-        #['customer','region'],[ 'nation']
-        # maxlen = len(QEPTree.leaf_nodes)
-        # print('maxlen is ', maxlen)
-        # todrop = []
-        # for key, item in intermediateAccumulative.items():
-        #     if len(item) >= maxlen:
-        #         todrop.append(key)
-        # for key in todrop:
-        #     del intermediateAccumulative[key]
-        # print(json.dumps(pairDictionary, indent=4))
-        # for k, v in pairDictionary.items():
-        #     print(k, v)
-        #     print()
-        # print('iteration over ------------')
         return pairDictionary
         
         
-                         
-        
-    
     def compareMain(self):
-        
-        
-        
         return self.compareIntermediates()
             
             

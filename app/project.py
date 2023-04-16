@@ -71,16 +71,7 @@ def index():
         elif query2 is None:
             context["errors2"].append("No query provided!")
   
-    return render_template("index.html", **context)
-
-
-# @app.route("/getComparison", methods = ["POST"])
-# def getComparison():
-#     global query1, query2
-#     con = preprocessing.DatabaseConnection.get_conn()
-#     intf = interface.interface(con, query1, query2)
-#     intf.getComparison()
-    
+    return render_template("index.html", **context)  
     
 
 if __name__ == "__main__":
