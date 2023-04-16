@@ -42,13 +42,11 @@ def index():
         
         if con is not None and query1 and query2:
             intf = interface.interface(con, query1, query2)
-            comparisonResult, jsonResult1, jsonResult2 = intf.getComparison()
+            comparisonResult = intf.getComparison()
             context["explanation"] = comparisonResult
             #app.logger.info(comparisonResult)
             context["query1"] = query1
             context["query2"] = query2
-            #context["json1"] = jsonResult1
-            #context["json2"] = jsonResult2
             has_error1, result1 = get_plans(query1)
             if has_error1:
                 context["errors1"].append(result1["msg"])
