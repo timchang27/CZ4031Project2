@@ -1,2 +1,11 @@
 __pycache__/
 .venv
+database/customer.csv
+database/database-dump.sql
+database/lineitem.csv
+database/nation.csv
+database/orders.csv
+database/part.csv
+database/partsupp.csv
+database/supplier.csv
+database/region.csv
