@@ -73,8 +73,10 @@ def index():
         context["explanation"] = "This is a sample message"    
         con = preprocessing.DatabaseConnection.get_conn()
         intf = interface.interface(con, query1, query2)
-        comparisonResult = intf.getComparison()
+        comparisonResult, jsonResult1, jsonResult2 = intf.getComparison()
         context["comparison_result"] = comparisonResult
+        context["json1"] = jsonResult1
+        context["json2"] = jsonResult2
     return render_template("index.html", **context)
 
 
