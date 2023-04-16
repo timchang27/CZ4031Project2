@@ -2,6 +2,7 @@ import psycopg2
 import json
 import qepGenerator
 import comparisonGenerator
+import logging
 
 class interface(object):
     def __init__(self, con, query1, query2):
@@ -13,6 +14,7 @@ class interface(object):
         cursurobject = self.con.cursor()
         cursurobject.execute(self.query1)
         result1 = cursurobject.fetchall()
+        logging.info(result1)
         jsonResult1 = json.dumps(result1)
         jsonObject = json.loads(jsonResult1)
         root1 = jsonObject[0][0]
