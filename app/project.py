@@ -2,6 +2,8 @@ from flask import Flask, request, render_template
 from preprocessing import get_plans
 import logging
 import json
+import preprocessing
+import interface
 
 app = Flask(__name__)
 
@@ -15,6 +17,7 @@ def add_header(response):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    global query1, query2
     # context for rendering the page
     context = {
         "query1": None,
@@ -67,10 +70,24 @@ def index():
                 context["natural_explain2"] = result2["natural_explain"]
         else:
             context["errors2"].append("No query provided!")   
-        context["explanation"] = "This is a sample message"     
-
+        context["explanation"] = "This is a sample message"    
+        con = preprocessing.DatabaseConnection.get_conn()
+        intf = interface.interface(con, query1, query2)
+        comparisonResult, jsonResult1, jsonResult2 = intf.getComparison()
+        context["comparison_result"] = comparisonResult
+        context["json1"] = jsonResult1
+        context["json2"] = jsonResult2
     return render_template("index.html", **context)
 
+
+# @app.route("/getComparison", methods = ["POST"])
+# def getComparison():
+#     global query1, query2
+#     con = preprocessing.DatabaseConnection.get_conn()
+#     intf = interface.interface(con, query1, query2)
+#     intf.getComparison()
+    
+    
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
