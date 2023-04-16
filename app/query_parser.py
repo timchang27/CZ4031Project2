@@ -85,6 +85,7 @@ def parse_sql_query(input):
 
         dict['LIMIT'] = limit_clause
 
+
     return dict 
 
 
@@ -93,22 +94,6 @@ def query_compare(query1, query2):
     query_1_dict = parse_sql_query(query1)
     query_2_dict = parse_sql_query(query2)
 
-    # Just for testing purposes, simpler to see
-    query_1_dict = {
-        'SELECT': ['column1', 'column2', 'column3'],
-        'FROM': ['table1', 'table2', 'table3'],
-        'WHERE': ['column1 > 10', 'column2 = "example"'],
-        'GROUP BY': ['column1', 'column2'],
-        'ORDER BY': ['column1 DESC', 'column2 ASC']
-    }
-
-    query_2_dict = {
-        'SELECT': ['column1', 'column3'],
-        'FROM': ['table1', 'table3'],
-        'GROUP BY': ['column1', 'column2'],
-        'ORDER BY': ['column1 DESC', 'column3 ASC'],
-        'LIMIT': ['100']
-    }
 
     for key in ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT']:
         # Case 1: key exists in both queries
@@ -188,8 +173,6 @@ if __name__ == "__main__":
         revenue desc;\
     "
 
-    # Changed select, where, group by
-    # Need to test diff number of clauses too
     query2 = "SELECT\
         n_name,\
         c_address,\
@@ -210,6 +193,7 @@ if __name__ == "__main__":
     ORDER BY\
         revenue desc;\
     "
+    
 
     query_compare(query1, query2)
 
