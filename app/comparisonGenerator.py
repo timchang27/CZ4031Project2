@@ -105,13 +105,11 @@ class comparisonGeneartor(object):
                 for relation in diff1:
                     temp1 += "{} on {}, ".format(leafplan1[relation], relation)
                     del leafplan1[relation]
-                temp1 += "\n"
                 difference.append(temp1)
             if len(diff2) != 0:
                 for relation in diff2:
                     temp2 += "{} on {}, ".format(leafplan2[relation], relation)
                     del leafplan2[relation]
-                temp2 += "\n"
                 difference.append(temp2)
         # elif set(leafplan1.keys()) == set(leafplan2.keys()):
             for relation in leafplan1.keys():
@@ -131,81 +129,86 @@ class comparisonGeneartor(object):
         intermediate1 = self._parseIntermediates(self.QEPTree1)
         intermediate2 = self._parseIntermediates(self.QEPTree2)
         #compare
-        inBoth = ""
-        inInt1 = ""
-        inInt2 = ""
-        bothJoinString = "{} were joined using {} in both Queries. However, in Query 1 they were joined {} on {}, while in Query 2 they were joined {} on {}\n"
+        inBoth = []
+        inInt1 = []
+        inInt2 = []
+        bothJoinString = "{} were joined using {} in both Queries. However, in Query 1 they were joined {} on {}, while in Query 2 they were joined {} on {}"
         totalRelationPairs = set()
         totalRelationPairs.update(intermediate1.keys())
         totalRelationPairs.update(intermediate2.keys())
         for relationPair in totalRelationPairs:
             if relationPair in intermediate1.keys():
+                int1 = intermediate1[relationPair]
                 if relationPair in intermediate2.keys():
-                    # Relation pair is in both intermediates
-                    int1 = intermediate1[relationPair]
                     int2 = intermediate2[relationPair]
-                    print(type(int1))
+                    # Relation pair is in both intermediates
                     if int1.node_type != int2.node_type:
                         if self.joinDictionary1.get(relationPair) != None:
                             if self.joinDictionary2.get(relationPair) != None:
-                                inBoth += "{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.\n".format(relationPair.title(), "directly", int1.node_type, "directly", int2.node_type)
+                                inBoth.append("{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.".format(relationPair.title(), "directly", int1.node_type, "directly", int2.node_type))
                             else:
-                                inBoth += "{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.\n".format(relationPair.title(), "directly", int1.node_type, "indirectly", int2.node_type)
+                                inBoth.append("{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.".format(relationPair.title(), "directly", int1.node_type, "indirectly", int2.node_type))
                         else:
                             if self.joinDictionary2.get(relationPair) != None:
-                                inBoth += "{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.\n".format(relationPair.title(), "indirectly", int1.node_type, "directly", int2.node_type)
+                                inBoth.append("{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.".format(relationPair.title(), "indirectly", int1.node_type, "directly", int2.node_type))
                             else:
-                                inBoth += "{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.\n".format(relationPair.title(), "indirectly", int1.node_type, "indirectly", int2.node_type)
+                                inBoth.append("{} which were originally joined {} using {} in Query 1, are now joined {} using {} in Query 2.".format(relationPair.title(), "indirectly", int1.node_type, "indirectly", int2.node_type))
                     elif int1.node_type == "Hash Join":
                         if int1.hash_cond != int2.hash_cond:
                             if self.joinDictionary1.get(relationPair) != None:
                                 if self.joinDictionary2.get(relationPair) != None:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Hash Join", "directly", int1.hash_cond, "directly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Hash Join", "directly", int1.hash_cond, "directly", int2.hash_cond))
                                 else:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Hash Join", "directly", int1.hash_cond, "indirectly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Hash Join", "directly", int1.hash_cond, "indirectly", int2.hash_cond))
                             else:
                                 if self.joinDictionary2.get(relationPair) != None:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Hash Join", "indirectly", int1.hash_cond, "directly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Hash Join", "indirectly", int1.hash_cond, "directly", int2.hash_cond))
                                 else:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Hash Join", "indirectly", int1.hash_cond, "indirectly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Hash Join", "indirectly", int1.hash_cond, "indirectly", int2.hash_cond))
                     elif int1.node_type == "Merge Join":
                         if int1.merge_condition != int2.merge_condition:
                             if self.joinDictionary1.get(relationPair) != None:
                                 if self.joinDictionary2.get(relationPair) != None:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Merge Join", "directly", int1.merge_condition, "directly", int2.merge_condition)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Merge Join", "directly", int1.merge_condition, "directly", int2.merge_condition))
                                 else:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Merge Join", "directly", int1.merge_condition, "indirectly", int2.merge_condition)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Merge Join", "directly", int1.merge_condition, "indirectly", int2.merge_condition))
                             else:
                                 if self.joinDictionary2.get(relationPair) != None:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Merge Join", "indirectly", int1.merge_condition, "directly", int2.merge_condition)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Merge Join", "indirectly", int1.merge_condition, "directly", int2.merge_condition))
                                 else:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Merge Join", "indirectly", int1.merge_condition, "indirectly", int2.merge_condition)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Merge Join", "indirectly", int1.merge_condition, "indirectly", int2.merge_condition))
                     elif int1.node_type == "Nested Loop":
                         if int1.hash_cond != int2.hash_cond:
                             if self.joinDictionary1.get(relationPair) != None:
                                 if self.joinDictionary2.get(relationPair) != None:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Nested Loop Join", "directly", int1.hash_cond, "directly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Nested Loop Join", "directly", int1.hash_cond, "directly", int2.hash_cond))
                                 else:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Nested Loop Join", "directly", int1.hash_cond, "indirectly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Nested Loop Join", "directly", int1.hash_cond, "indirectly", int2.hash_cond))
                             else:
                                 if self.joinDictionary2.get(relationPair) != None:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Nested Loop Join", "indirectly", int1.hash_cond, "directly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Nested Loop Join", "indirectly", int1.hash_cond, "directly", int2.hash_cond))
                                 else:
-                                    inBoth += bothJoinString.format(relationPair.title(), "Nested Loop Join", "indirectly", int1.hash_cond, "indirectly", int2.hash_cond)
+                                    inBoth.append(bothJoinString.format(relationPair.title(), "Nested Loop Join", "indirectly", int1.hash_cond, "indirectly", int2.hash_cond))
                 else:
                     # Only in intermediate1
-                    inInt1 += "A direct join on {} using {} only occurs in Query 1.\n".format(relationPair.title(), int1.node_type)
+                    inInt1.append("A direct join on {} using {} only occurs in Query 1. ".format(relationPair.title(), int1.node_type))
             else:
                 # Only in intermediate2
-                inInt2 += "A join on {} using {} only occurs in Query 2.\n".format(relationPair.title(), int2.node_type)
+                int2 = intermediate2[relationPair]
+                inInt2.append("A join on {} using {} only occurs in Query 2. ".format(relationPair.title(), int2.node_type))
 
-        finalComparisonString = "The following relations were joined in both Query 1 and 2, but were either joined using a different join algorithm or on different join conditions:\n" + inBoth + "\n"
+        if len(inBoth) != 0:
+            finalComparisonString = "The following relations were joined in both Query 1 and 2, but were either joined using a different join algorithm or on different join conditions:"
+            difference.append(finalComparisonString)
+            difference.extend(inBoth)
         if len(inInt1) != 0:
-            finalComparisonString += "The following differences occurred are the result of a join on two relations occuring in Query 1 but not in Query 2:\n" + inInt1 + "\n"
+            finalComparisonString = "The following differences that occurred are the result of a join on two relations occuring in Query 1 but not in Query 2:"
+            difference.append(finalComparisonString)
+            difference.extend(inInt1)
         if len(inInt2) != 0:
-            finalComparisonString += "The following differences occurred are the result of a join on two relations occuring in Query 2 but not in Query 1:\n" + inInt2
-        
-        difference.append(finalComparisonString)
+            finalComparisonString = "The following differences that occurred are the result of a join on two relations occuring in Query 2 but not in Query 1:"
+            difference.append(finalComparisonString)
+            difference.extend(inInt2)
         return difference
         
         
@@ -267,7 +270,7 @@ class comparisonGeneartor(object):
                         intermediateAccumulative[key] += [relation]
                         added.append([relation])
                 
-                # print("\nadded list:")
+                # print("added list:")
                 # print(added)
                 # print('---------------------')
                 for outerRelation in added[0]:
