@@ -85,7 +85,6 @@ def parse_sql_query(input):
 
         dict['LIMIT'] = limit_clause
 
-
     return dict 
 
 
@@ -94,13 +93,17 @@ def query_compare(query1, query2):
     query_1_dict = parse_sql_query(query1)
     query_2_dict = parse_sql_query(query2)
 
+    changes_list = []
 
     for key in ['SELECT', 'FROM', 'WHERE', 'GROUP BY', 'HAVING', 'ORDER BY', 'LIMIT']:
+        if key not in query_1_dict and key not in query_2_dict:
+            changes_list.append(f"This clause was not used in both queries")
+            
         # Case 1: key exists in both queries
         if key in query_1_dict and key in query_2_dict:
             # Case 1.1: value in key is unchanged
             if query_1_dict[key] == query_2_dict[key]:
-                print(f"\nPredicates for the {key} clause remained the same")
+                changes_list.append(f"Predicates for the {key} clause remained the same")
             # Case 1.2: value in key has changed
             else:
                 old_value = query_1_dict[key]
@@ -118,23 +121,30 @@ def query_compare(query1, query2):
                         present_in_new_not_old.append(f"{elem}")
                 
                 changes = []
+                
                 if present_in_old_not_new:
                     changes.append("Was present in Query 1 but not Query 2: " + ", ".join(present_in_old_not_new))
                 if present_in_new_not_old:
                     changes.append("Was not present in Query 1 but is now present in Query 2: " + ", ".join(present_in_new_not_old))
-                print(f"\nPredicates for the {key} clause have changed:")
+                changes_list.append(f"Predicates for the {key} clause have changed:")
                 if changes:
                     for change in changes:
-                        print(change)
+                        changes_list.append(change)
 
         # Case 2: keys not present in one of the two
         else:
             # Case 2.1: key present in query1 but not query2
             if key in query_1_dict and key not in query_2_dict:
-                print(f"\nThe {key} clause was present in Query 1 but is now not present in Query 2")
+                changes_list.append(f"The {key} clause was present in Query 1 but is now not present in Query 2")
             # Case 2.2: key present in query2 but not query1
             if key in query_2_dict and key not in query_1_dict:
-                print(f"\nThe {key} clause was not present in Query 1 but is now present in Query 2")
+                changes_list.append(f"The {key} clause was not present in Query 1 but is now present in Query 2")
+
+        
+    
+    return changes_list
+
+
 
 
 if __name__ == "__main__":
@@ -193,9 +203,9 @@ if __name__ == "__main__":
     ORDER BY\
         revenue desc;\
     "
-    
 
-    query_compare(query1, query2)
+    query_change_explanation = query_compare(query1, query2)
+    print(query_change_explanation)
 
 
 
